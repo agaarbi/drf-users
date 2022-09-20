@@ -24,6 +24,7 @@ def login_user(request):
     serializer = LoginSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         login_phone = serializer.data.get('phone')
+
         login_password = serializer.data.get('password')
         queryset = Accounts.objects.filter(phone=login_phone)
         if queryset:
@@ -33,7 +34,7 @@ def login_user(request):
                 token = get_tokens_for_user(queryset[0])
                 print(token)
                 response_field = {"access": token.get('access'), "refresh": token.get(
-                    'refresh'), "first_name": queryset[0].first_name, "last_name": queryset[0].last_name}
+                    'refresh'), "first_name": queryset [0].first_name, "last_name": queryset[0].last_name}
             else:
                 print("invalid password")
         else:
