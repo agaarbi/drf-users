@@ -15,6 +15,11 @@ class AccountSerializer(serializers.ModelSerializer):
         ]
 
 
+class LoginSerializer(serializers.Serializer):
+    phone = serializers.CharField(max_length=12)
+    password = serializers.CharField(max_length=300)
+
+
 # JSON Query for writing user details in custom accounts db
 """{
 "phone":"03002588822",

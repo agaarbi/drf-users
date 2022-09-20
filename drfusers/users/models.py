@@ -1,6 +1,7 @@
 from django.db import models
 import bcrypt
 import uuid
+from django.contrib.auth.hashers import make_password
 
 
 class Accounts(models.Model):
@@ -15,16 +16,7 @@ class Accounts(models.Model):
     # username = models.CharField(max_length=120)
 
     def save(self, *args, **kwargs):
-        password = str(self.password)
-        password = password.encode('utf-8')
-        hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+        hashed = make_password(self.password)
         self.password = hashed
-
-        # Checking
-        # print(self.password)
-        # if bcrypt.checkpw(password, hashed):
-        #     print("match")
-        # else:
-        #     print("does not match")
 
         super(Accounts, self).save(*args, **kwargs)
