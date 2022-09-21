@@ -26,15 +26,15 @@ def login_user(request):
         login_phone = serializer.data.get('phone')
 
         login_password = serializer.data.get('password')
-        queryset = Accounts.objects.filter(phone=login_phone)
-        if queryset:
-            print(queryset[0].password)
-            if check_password(login_password, queryset[0].password):
+        user = Accounts.objects.get(phone=login_phone)
+        if user:
+            print(user.password)
+            if check_password(login_password, user.password):
                 print("password validated")
-                token = get_tokens_for_user(queryset[0])
+                token = get_tokens_for_user(user)
                 print(token)
                 response_field = {"access": token.get('access'), "refresh": token.get(
-                    'refresh'), "first_name": queryset [0].first_name, "last_name": queryset[0].last_name}
+                    'refresh'), "first_name": user.first_name, "last_name": user.last_name}
             else:
                 print("invalid password")
         else:
