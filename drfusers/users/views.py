@@ -5,7 +5,7 @@ from .serializer import AccountSerializer
 from .models import Accounts
 from django.contrib.auth.hashers import check_password
 
-from rest_framework_simplejwt.tokens import RefreshToken
+from .jwt import get_tokens_for_user
 
 
 @api_view(['POST'])
@@ -40,12 +40,3 @@ def login_user(request):
         print("invalid phone number")
 
     return Response(response_field)
-
-
-def get_tokens_for_user(user):
-    refresh = RefreshToken.for_user(user)
-
-    return {
-        'refresh': str(refresh),
-        'access': str(refresh.access_token),
-    }
