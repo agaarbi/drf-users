@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .serializer import AccountSerializer, LoginSerializer
+from .serializer import AccountSerializer
 from .models import Accounts
 from django.contrib.auth.hashers import check_password
 
@@ -21,27 +21,25 @@ def create_user(request):
 
 @api_view(['POST'])
 def login_user(request):
-    serializer = LoginSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        login_phone = serializer.data.get('phone')
 
-        login_password = serializer.data.get('password')
-        user = Accounts.objects.get(phone=login_phone)
-        if user:
-            print(user.password)
-            if check_password(login_password, user.password):
-                print("password validated")
-                token = get_tokens_for_user(user)
-                print(token)
-                response_field = {"access": token.get('access'), "refresh": token.get(
-                    'refresh'), "first_name": user.first_name, "last_name": user.last_name}
-            else:
-                print("invalid password")
+    login_phone = request.data.get('phone')
+    login_password = request.data.get('password')
+
+    user = Accounts.objects.get(phone=login_phone)
+    if user:
+        print(user.password)
+        if check_password(login_password, user.password):
+            print("password validated")
+            token = get_tokens_for_user(user)
+            print(token)
+            response_field = {"access": token.get('access'), "refresh": token.get(
+                'refresh'), "first_name": user.first_name, "last_name": user.last_name}
         else:
-            print("invalid phone number")
-        return Response(response_field)
+            print("invalid password")
     else:
-        return Response({"invalid": "criteria not match"})
+        print("invalid phone number")
+
+    return Response(response_field)
 
 
 def get_tokens_for_user(user):
