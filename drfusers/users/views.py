@@ -30,11 +30,11 @@ class LoginUser(APIView):
         login_phone = request.data.get('phone')
         login_password = request.data.get('password')
 
-        try:
-            token = get_access_token(request)
-            print(token)
-        except:
-            print("token not found in header")
+        # try:
+        #     token = get_access_token(request)
+        #     print(token)
+        # except:
+        #     print("token not found in header")
 
         try:
             user = Accounts.objects.get(phone=login_phone)
