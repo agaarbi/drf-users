@@ -5,7 +5,7 @@ from .serializer import AccountSerializer
 from .models import Accounts
 from django.contrib.auth.hashers import check_password
 
-from .jwt import get_tokens_for_user, get_user_id
+from .jwt import get_tokens_for_user, get_user_id, get_access_token
 from .responses import *
 
 
@@ -29,6 +29,12 @@ class LoginUser(APIView):
     def post(self, request, format=None):
         login_phone = request.data.get('phone')
         login_password = request.data.get('password')
+
+        try:
+            token = get_access_token(request)
+            print(token)
+        except:
+            print("token not found in header")
 
         try:
             user = Accounts.objects.get(phone=login_phone)

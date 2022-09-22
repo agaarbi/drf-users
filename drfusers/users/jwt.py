@@ -18,3 +18,11 @@ def get_user_id(token):
     parsed_user_id = payload["user_id"]
     # print(f"parsed user_id is: {parsed_user_id}")
     return parsed_user_id
+
+
+def get_access_token(request):
+    headers = request.headers
+    # print(headers)
+    bearer = headers.get('Authorization')    # Bearer YourTokenHere
+    token = bearer.split()[1]  # YourTokenHere
+    return token
