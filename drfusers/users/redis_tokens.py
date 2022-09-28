@@ -19,12 +19,12 @@ def delete_token(token):
     return r0.delete(token)
 
 
-print(save_token("1a", 1))
-print(check_token("1a"))
-time.sleep(2)
-print(check_token("1a"))
-print(delete_token("1a"))
-print(check_token("1a"))
+# print(save_token("1a", 1))
+# print(check_token("1a"))
+# time.sleep(2)
+# print(check_token("1a"))
+# print(delete_token("1a"))
+# print(check_token("1a"))
 
 # r0.set("name", "ghani")
 # r0.mset({"age": 23, "gender": "male"})
