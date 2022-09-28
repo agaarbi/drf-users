@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import check_password
 
 from .jwt import get_tokens_for_user, get_user_id, get_access_token
 from .responses import *
+from .redis_tokens import *
 
 
 class CreateUser(APIView):
@@ -41,10 +42,11 @@ class LoginUser(APIView):
             if user:
                 if check_password(login_password, user.password):
                     token = get_tokens_for_user(user)
-                    # user_id = get_user_id(token.get('access'))
+                    user_id = get_user_id(token.get('access'))
                     # print(f"parsed user_id: {user_id}")
                     response_field = {"access": token.get('access'), "refresh": token.get(
                         'refresh'), "first_name": user.first_name, "last_name": user.last_name}
+                    save_token(token.get('access'), user_id)
                 else:
                     return CustomResponse.error_login(error_response="error", wrong_attempts="", status=ERROR_STATUS_CODE)
             else:
@@ -57,3 +59,16 @@ class LoginUser(APIView):
 
 
 login_user = LoginUser.as_view()
+
+
+class LogoutUser(APIView):
+
+    def post(self, request, format=None):
+        token = request.data.get('token')
+        if (delete_token(token)):
+            return CustomResponse.success_data("account logged out")
+        else:
+            return CustomResponse.error(error_response="logout error", status=ERROR_STATUS_CODE)
+
+
+logout_user = LogoutUser.as_view()
