@@ -29,18 +29,23 @@ class CreateUserWithLogin(APIView):
 
     def post(self, request, format=None):
         serializer = AccountSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
-            # print(user)
-            token = get_tokens_for_user(user)
-            # user_id = get_user_id(token.get('access'))
-            # print(f"parsed user_id: {user_id}")
-            response_field = {"access": token.get('access'), "refresh": token.get(
-                'refresh'), "first_name": user.first_name, "last_name": user.last_name}
-            save_token(token.get('access'), str(user))
-            return CustomResponse.success_data(response_field)
-        else:
-            return CustomResponse.error(error_response="USER_DOES_NOT_CREATED", status=ERROR_STATUS_CODE_FORBIDDEN)
+        try:
+            if serializer.is_valid(raise_exception=True):
+                user = serializer.save()
+                # print(user)
+                token = get_tokens_for_user(user)
+                # user_id = get_user_id(token.get('access'))
+                # print(f"parsed user_id: {user_id}")
+                response_field = {"access": token.get('access'), "refresh": token.get(
+                    'refresh'), "first_name": user.first_name, "last_name": user.last_name}
+                save_token(token.get('access'), str(user))
+            else:
+                return CustomResponse.error(error_response="USER_DOES_NOT_CREATED", status=ERROR_STATUS_CODE_FORBIDDEN)
+
+        except Exception as err:
+            return CustomResponse.internal_server_error(str(err))
+
+        return CustomResponse.success_data(response_field)
 
 
 create_user_with_login = CreateUserWithLogin.as_view()
